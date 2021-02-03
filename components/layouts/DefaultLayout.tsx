@@ -3,6 +3,7 @@ import Head from 'next/head'
 import { FC } from 'react'
 import appMeta from '../../configs/appMeta'
 import CodeBlock from '../CodeBlock'
+import packageJSON from '../../package.json'
 
 interface Props {
   meta?: {
@@ -34,7 +35,7 @@ const DefaultLayout: FC<Props> = ({ meta, children }) => {
             <hr />
             {children}
             <hr />
-            <p>GitHub: <a href="https://github.com/richmonkeys">@richmonkeys</a></p>
+            <p>GitHub: <a href={packageJSON.homepage}>richmonkeys/{packageJSON.name}</a></p>
           </div>
         </div>
       </>
