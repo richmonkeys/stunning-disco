@@ -5,6 +5,8 @@ import { NotFoundError, RateLimitError } from '../../../libs/errors'
 import getIpAddress from '../../../libs/getIpAddress'
 import set from 'lodash/set'
 import get from 'lodash/get'
+import { existsSync, readFileSync } from 'fs'
+import { join } from 'path'
 
 const rateLimit = new RateLimit(1000, 60 * 1000)
 
@@ -17,7 +19,13 @@ export default requestHandler(async (req: NextApiRequest, res: NextApiResponse) 
     throw new RateLimitError('Rate limit of 10 requests every 60 seconds exceeded.')
   }
 
-  const countries: any[] = require('../../../data/countries.json')
+  const countriesJSONPath = join(process.cwd(), 'data', 'countries.json')
+  if (!existsSync(countriesJSONPath)) {
+    return []
+  }
+
+  const countries: any[] = JSON.parse(readFileSync(countriesJSONPath).toString())
+  // const countries: any[] = require('../../../data/countries.json')
   const timezones = countries.reduce((timezones, country) => {
     country.timezones.forEach((timezone: any) => {
       set(timezones, `${timezone.timezone}.timezone`, timezone.timezone)
