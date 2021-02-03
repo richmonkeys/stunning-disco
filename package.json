@@ -1,5 +1,6 @@
 {
   "name": "stunning-disco",
+  "description": "Country, states, cities, currencies & timezones webservice.",
   "version": "0.1.0",
   "private": true,
   "scripts": {
