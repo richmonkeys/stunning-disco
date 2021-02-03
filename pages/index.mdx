@@ -1,0 +1,333 @@
+import DefaultLayout from '../components/layouts/DefaultLayout'
+import appMeta from '../configs/appMeta'
+
+export const meta = {
+  // title: '',
+  // description: 'Country, states, cities, currencies & timezones webservice.',
+}
+
+## Countries API
+
+API to retrive a list of countries or a single country.
+
+`Country` typescript definition:
+
+```ts
+type Country = {
+  countryName: string
+  countryCode: string
+  countryNameTranslations: {
+    [languageCode: string]: string
+  }
+  nativeCountryName: string
+  continentCode: string
+  continentName: string
+  capital: string
+  capital: string
+  isoAlpha3: string
+  isoNumeric: string
+  areaInSqKm: number
+  fipsCode: string
+  languageCodes: string[]
+  currencyCode: string
+  currencyName: string
+  currencySymbol: string
+  postalCodeFormat: string
+  e.164: string
+  timezones: {
+    timezone: string
+    name: string
+    abbreviation: string
+    gmtOffset: number
+    gmtOffsetName: string
+  }[]
+  latitude: string
+  longitude: string
+  population: number
+  north: number
+  east: number
+  south: number
+  west: number
+  emoji: string
+  emojiUnicode: string
+}
+```
+
+---
+
+### Get list of countries
+
+**GET** `/api/countries`
+
+**Example Returns**
+```json
+[
+  ...
+  {
+    "countryName": "Malaysia",
+    "countryCode": "MY",
+    "countryNameTranslations": {
+      "br": "Malásia",
+      "pt": "Malásia",
+      "nl": "Maleisië",
+      "hr": "Malezija",
+      "fa": "مالزی",
+      "de": "Malaysia",
+      "es": "Malasia",
+      "fr": "Malaisie",
+      "ja": "マレーシア",
+      "it": "Malesia"
+    },
+    "nativeCountryName": "Malaysia",
+    "continentCode": "AS",
+    "continentName": "Asia",
+    "capital": "Kuala Lumpur",
+    "isoAlpha3": "MYS",
+    "isoNumeric": "458",
+    "areaInSqKm": 329750,
+    "fipsCode": "MY",
+    "languageCodes": [
+      "ms-MY",
+      "en",
+      "zh",
+      "ta",
+      "te",
+      "ml",
+      "pa",
+      "th"
+    ],
+    "currencyCode": "MYR",
+    "currencyName": "Malaysian Ringgit",
+    "currencySymbol": "RM",
+    "postalCodeFormat": "#####",
+    "e.164": "60",
+    "timezones": [
+      {
+        "timezone": "Asia/Kuala_Lumpur",
+        "name": "Malaysia Time",
+        "abbreviation": "MYT",
+        "gmtOffset": 28800,
+        "gmtOffsetName": "UTC+08:00"
+      },
+      {
+        "timezone": "Asia/Kuching",
+        "name": "Malaysia Time",
+        "abbreviation": "MYT",
+        "gmtOffset": 28800,
+        "gmtOffsetName": "UTC+08:00"
+      }
+    ],
+    "latitude": "2.50000000",
+    "longitude": "112.50000000",
+    "population": 31528585,
+    "north": 7.363417,
+    "east": 119.267502,
+    "south": 0.855222,
+    "west": 99.643448,
+    "emoji": "🇲🇾",
+    "emojiUnicode": "U+1F1F2 U+1F1FE"
+  },
+  ...
+]
+```
+
+---
+
+### Get a country by countryCode
+
+**GET** `/api/countries/:countryCode`
+
+**Params**
+
+```ts
+countryCode: string // required
+```
+
+**Example Returns**
+```json
+{
+  "countryName": "Malaysia",
+  "countryCode": "MY",
+  "countryNameTranslations": {
+    "br": "Malásia",
+    "pt": "Malásia",
+    "nl": "Maleisië",
+    "hr": "Malezija",
+    "fa": "مالزی",
+    "de": "Malaysia",
+    "es": "Malasia",
+    "fr": "Malaisie",
+    "ja": "マレーシア",
+    "it": "Malesia"
+  },
+  "nativeCountryName": "Malaysia",
+  "continentCode": "AS",
+  "continentName": "Asia",
+  "capital": "Kuala Lumpur",
+  "isoAlpha3": "MYS",
+  "isoNumeric": "458",
+  "areaInSqKm": 329750,
+  "fipsCode": "MY",
+  "languageCodes": [
+    "ms-MY",
+    "en",
+    "zh",
+    "ta",
+    "te",
+    "ml",
+    "pa",
+    "th"
+  ],
+  "currencyCode": "MYR",
+  "currencyName": "Malaysian Ringgit",
+  "currencySymbol": "RM",
+  "postalCodeFormat": "#####",
+  "e.164": "60",
+  "timezones": [
+    {
+      "timezone": "Asia/Kuala_Lumpur",
+      "name": "Malaysia Time",
+      "abbreviation": "MYT",
+      "gmtOffset": 28800,
+      "gmtOffsetName": "UTC+08:00"
+    },
+    {
+      "timezone": "Asia/Kuching",
+      "name": "Malaysia Time",
+      "abbreviation": "MYT",
+      "gmtOffset": 28800,
+      "gmtOffsetName": "UTC+08:00"
+    }
+  ],
+  "latitude": "2.50000000",
+  "longitude": "112.50000000",
+  "population": 31528585,
+  "north": 7.363417,
+  "east": 119.267502,
+  "south": 0.855222,
+  "west": 99.643448,
+  "emoji": "🇲🇾",
+  "emojiUnicode": "U+1F1F2 U+1F1FE"
+}
+```
+
+---
+
+## States API
+
+API to retrive a list of states or a single state.
+
+`State` typescript definition:
+
+```ts
+type State = {
+  stateName: string
+  stateCode: string
+  countryCode: string
+  latitude: string
+  longitude: string
+}
+```
+
+---
+
+### Get list of states by countryCode
+
+**GET** `/api/states?countryCode={countryCode}`
+
+**Query**
+
+```ts
+countryCode: string // required
+```
+
+**Example Returns**
+```json
+[
+  ...
+  {
+    "stateName": "Kuala Lumpur",
+    "stateCode": "MY-14",
+    "countryCode": "MY",
+    "latitude": "3.13900300",
+    "longitude": "101.68685500"
+  },
+  ...
+]
+```
+
+---
+
+### Get a state by stateCode
+
+**GET** `/api/states/:stateCode`
+
+**Query**
+
+```ts
+stateCode: string // required
+```
+
+**Example Returns**
+```json
+{
+  "stateName": "Kuala Lumpur",
+  "stateCode": "MY-14",
+  "countryCode": "MY",
+  "latitude": "3.13900300",
+  "longitude": "101.68685500"
+}
+```
+
+---
+
+## Cities API
+
+API to retrive a list of cities.
+
+*Note that getting a single city via this API is not possible.*
+
+`State` typescript definition:
+
+```ts
+type City = {
+  cityName: string
+  countryCode: string
+  stateCode: string
+  latitude: string
+  longitude: string
+}
+```
+
+---
+
+### Get list of cities by either countryCode or stateCode
+
+Only accepts either countryCode or stateCode as query, but not both.
+
+**GET** `/api/cities?countryCode={countryCode}`
+
+**Query**
+
+```ts
+// only one of the following
+countryCode: string
+stateCode: string
+```
+
+**Example Returns**
+```json
+[
+  ...
+  {
+    "cityName": "Kuala Lumpur",
+    "countryCode": "MY",
+    "stateCode": "MY-14",
+    "latitude": "3.14120000",
+    "longitude": "101.68653000"
+  },
+  ...
+]
+```
+
+export default ({ children }) => <DefaultLayout meta={meta}>{children}</DefaultLayout>
