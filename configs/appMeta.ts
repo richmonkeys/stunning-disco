@@ -1,5 +1,5 @@
 const appMeta = {
-  name: 'stunning-disco',
+  name: 'Stunning Disco',
   description: 'Country, states, cities, currencies & timezones webservice.',
 }
 
