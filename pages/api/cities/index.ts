@@ -3,6 +3,8 @@ import requestHandler from '../../../libs/requestHandler'
 import { BadRequestError, RateLimitError } from '../../../libs/errors'
 import RateLimit from '../../../libs/rateLimit'
 import getIpAddress from '../../../libs/getIpAddress'
+import fs from 'fs'
+import path from 'path'
 
 const rateLimit = new RateLimit(1000, 60 * 1000)
 
@@ -20,7 +22,12 @@ export default requestHandler(async (req: NextApiRequest, res: NextApiResponse) 
 
   res.setHeader('Cache-Control', 'maxage=86400, s-maxage=86400, stale-while-revalidate')
 
-  const cities: any[] = require('../../../data/cities.json')
+  const citiesJSONPath = path.join(process.cwd(), 'data', 'cities.json')
+  if (!fs.existsSync(citiesJSONPath)) {
+    return []
+  }
+
+  const cities: any[] = JSON.parse(fs.readFileSync(citiesJSONPath).toString())
   if (countryCode) {
     return cities.filter(city => city.countryCode === countryCode)
   } else if (stateCode) {

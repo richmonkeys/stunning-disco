@@ -16,7 +16,13 @@ const buildStatesJSON = async () => {
 
   await require('./raw/states/fetch')()
 
-  const rawStatesJSON = require('./raw/states/data.json')
+  const rawPath = path.join(process.cwd(), 'data', 'raw', 'states', 'data.json')
+  if (!fs.existsSync(rawPath)) {
+    return
+  }
+  const rawStatesJSON = JSON.parse(fs.readFileSync(rawPath).toString())
+
+  // const rawStatesJSON = require('./raw/states/data.json')
 
   const states = rawStatesJSON.map(state => {
     return {

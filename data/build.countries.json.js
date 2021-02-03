@@ -18,9 +18,27 @@ const buildCountriesJSON = async () => {
   await require('./raw/countryInfo/fetch')()
   await require('./raw/currencies/fetch')()
 
-  const rawCountriesJSON = require('./raw/countries/data.json')
-  const rawCountryInfoJSON = require('./raw/countryInfo/data.json')
-  const rawCurrenciesJSON = require('./raw/currencies/data.json')
+  const rawCountriesPath = path.join(process.cwd(), 'data', 'raw', 'countries', 'data.json')
+  if (!fs.existsSync(rawCountriesPath)) {
+    return
+  }
+  const rawCountriesJSON = JSON.parse(fs.readFileSync(rawCountriesPath).toString())
+
+  const rawCountryInfoPath = path.join(process.cwd(), 'data', 'raw', 'countryInfo', 'data.json')
+  if (!fs.existsSync(rawCountryInfoPath)) {
+    return
+  }
+  const rawCountryInfoJSON = JSON.parse(fs.readFileSync(rawCountryInfoPath).toString())
+
+  const rawCurrenciesPath = path.join(process.cwd(), 'data', 'raw', 'currencies', 'data.json')
+  if (!fs.existsSync(rawCurrenciesPath)) {
+    return
+  }
+  const rawCurrenciesJSON = JSON.parse(fs.readFileSync(rawCurrenciesPath).toString())
+
+  // const rawCountriesJSON = require('./raw/countries/data.json')
+  // const rawCountryInfoJSON = require('./raw/countryInfo/data.json')
+  // const rawCurrenciesJSON = require('./raw/currencies/data.json')
 
   const countries = rawCountriesJSON.map(country => {
     const countryInfo = rawCountryInfoJSON.geonames.find(geoname => geoname.countryCode === country.iso2)

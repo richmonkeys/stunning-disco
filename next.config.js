@@ -12,7 +12,7 @@ module.exports = withMDX({
   pageExtensions: ['js', 'jsx', 'ts', 'tsx', 'md', 'mdx'],
   webpack: (config, { isServer }) => {
     if (isServer) {
-      // require('./data/build.js')
+      require('./data/build.js')
     }
 
     // Fixes packages that depend on fs/module module

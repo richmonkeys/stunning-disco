@@ -27,7 +27,7 @@ const requestHandler: RequestHandler = (handler) => async (req, res) => {
     } else {
       res.send(result)
     }
-    require('../data/build')
+    // await require('../data/build')()
     // await prisma.$disconnect()
   } catch (error) {
     errorHandler(res, error)

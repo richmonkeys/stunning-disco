@@ -3,6 +3,8 @@ import requestHandler from '../../../libs/requestHandler'
 import getIpAddress from '../../../libs/getIpAddress'
 import RateLimit from '../../../libs/rateLimit'
 import { RateLimitError } from '../../../libs/errors'
+import fs from 'fs'
+import path from 'path'
 
 const rateLimit = new RateLimit(1000, 60 * 1000)
 
@@ -13,6 +15,16 @@ export default requestHandler(async (req: NextApiRequest, res: NextApiResponse) 
     throw new RateLimitError('Rate limit of 10 requests every 60 seconds exceeded.')
   }
 
-  const countries: any[] = require('../../../data/countries.json')
-  return countries
+  // console.log('cwd', process.cwd())
+
+  // const countriesJSONPath = path.join(process.cwd(), 'data', 'countries.json')
+  // if (!fs.existsSync(countriesJSONPath)) {
+  //   return []
+  // }
+
+  return 1
+
+  // const countries: any[] = JSON.parse(fs.readFileSync(countriesJSONPath).toString())
+  // // const countries: any[] = require('../../../data/countries.json')
+  // return countries
 })

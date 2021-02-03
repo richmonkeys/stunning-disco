@@ -8,7 +8,7 @@
     "build": "next build",
     "build:data": "node data/build.js",
     "start": "next start",
-    "clean": "npm run clean",
+    "clean": "npm run clean:data",
     "clean:data": "rimraf data/**/*.json"
   },
   "repository": {
