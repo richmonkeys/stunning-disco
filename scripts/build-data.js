@@ -4,7 +4,8 @@ const axios = require('axios').default
 const addDate = require('date-fns/add')
 const orderBy = require('lodash/orderBy')
 
-const BASE_DIR = ['node_modules', '@richmonkeys', '.stunning-disco']
+// const BASE_DIR = ['node_modules', '@richmonkeys', '.stunning-disco']
+const BASE_DIR = ['data', 'tmp']
 
 /**
  * 
@@ -16,12 +17,15 @@ const BASE_DIR = ['node_modules', '@richmonkeys', '.stunning-disco']
 const getRemoteFile = async (url, filename, axiosConfig = {}, dirname = []) => {
   const dir = path.join(process.cwd(), ...BASE_DIR, ...dirname)
   const absolutePath = path.join(dir, filename)
+  const tmpFile = path.join(dir, `${filename}.tmp`)
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir, { recursive: true })
   }
   if (fs.existsSync(absolutePath)) {
     const stat = fs.statSync(absolutePath)
-    if (addDate(stat.mtime, { days: 1 }) > new Date()) {
+    if ((addDate(stat.mtime, { days: 1 }) > new Date() && !fs.existsSync(tmpFile))
+      || addDate(stat.mtime, { days: 2 }) > new Date()
+    ) {
       console.log('Loaded', filename, 'from cache', absolutePath)
       return JSON.parse(fs.readFileSync(absolutePath).toString())
     }
@@ -29,9 +33,11 @@ const getRemoteFile = async (url, filename, axiosConfig = {}, dirname = []) => {
 
   const start = Date.now()
   console.log('Refreshing', absolutePath)
+  fs.closeSync(fs.openSync(tmpFile, 'w'))
   const response = await axios.get(url, axiosConfig)
   fs.writeFileSync(absolutePath, JSON.stringify(response.data))
   console.log('Successfully refreshed', absolutePath, 'in', `${Date.now() - start}ms`)
+  fs.unlinkSync(tmpFile)
 
   return response.data
 }
@@ -39,12 +45,15 @@ const getRemoteFile = async (url, filename, axiosConfig = {}, dirname = []) => {
 const buildCountriesJSON = async (filename = 'countries.json', dirname = []) => {
   const dir = path.join(process.cwd(), ...BASE_DIR, ...dirname)
   const absolutePath = path.join(dir, filename)
+  const tmpFile = path.join(dir, `${filename}.tmp`)
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir, { recursive: true })
   }
   if (fs.existsSync(absolutePath)) {
     const stat = fs.statSync(absolutePath)
-    if (addDate(stat.mtime, { days: 1 }) > new Date()) {
+    if ((addDate(stat.mtime, { days: 1 }) > new Date() && !fs.existsSync(tmpFile))
+      || addDate(stat.mtime, { days: 2 }) > new Date()
+    ) {
       console.log('Loaded', filename, 'from cache', absolutePath)
       return JSON.parse(fs.readFileSync(absolutePath).toString())
     }
@@ -97,18 +106,23 @@ const buildCountriesJSON = async (filename = 'countries.json', dirname = []) => 
   })
 
   const ordered = orderBy(countries, 'countryCode')
+  fs.closeSync(fs.openSync(tmpFile, 'w'))
   fs.writeFileSync(absolutePath, JSON.stringify(ordered))
+  fs.unlinkSync(tmpFile)
 }
 
 const buildStatesJSON = async (filename = 'states.json', dirname = []) => {
   const dir = path.join(process.cwd(), ...BASE_DIR, ...dirname)
   const absolutePath = path.join(dir, filename)
+  const tmpFile = path.join(dir, `${filename}.tmp`)
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir, { recursive: true })
   }
   if (fs.existsSync(absolutePath)) {
     const stat = fs.statSync(absolutePath)
-    if (addDate(stat.mtime, { days: 1 }) > new Date()) {
+    if ((addDate(stat.mtime, { days: 1 }) > new Date() && !fs.existsSync(tmpFile))
+      || addDate(stat.mtime, { days: 2 }) > new Date()
+    ) {
       console.log('Loaded', filename, 'from cache', absolutePath)
       return JSON.parse(fs.readFileSync(absolutePath).toString())
     }
@@ -127,18 +141,23 @@ const buildStatesJSON = async (filename = 'states.json', dirname = []) => {
   })
 
   const ordered = orderBy(states, ['stateCode'])
+  fs.closeSync(fs.openSync(tmpFile, 'w'))
   fs.writeFileSync(absolutePath, JSON.stringify(ordered))
+  fs.unlinkSync(tmpFile)
 }
 
 const buildCitiesJSON = async (filename = 'cities.json', dirname = []) => {
   const dir = path.join(process.cwd(), ...BASE_DIR, ...dirname)
   const absolutePath = path.join(dir, filename)
+  const tmpFile = path.join(dir, `${filename}.tmp`)
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir, { recursive: true })
   }
   if (fs.existsSync(absolutePath)) {
     const stat = fs.statSync(absolutePath)
-    if (addDate(stat.mtime, { days: 1 }) > new Date()) {
+    if ((addDate(stat.mtime, { days: 1 }) > new Date() && !fs.existsSync(tmpFile))
+      || addDate(stat.mtime, { days: 2 }) > new Date()
+    ) {
       console.log('Loaded', filename, 'from cache', absolutePath)
       return JSON.parse(fs.readFileSync(absolutePath).toString())
     }
@@ -157,7 +176,9 @@ const buildCitiesJSON = async (filename = 'cities.json', dirname = []) => {
   })
 
   const ordered = orderBy(cities, ['countryCode', 'stateCode'])
+  fs.closeSync(fs.openSync(tmpFile, 'w'))
   fs.writeFileSync(absolutePath, JSON.stringify(ordered))
+  fs.unlinkSync(tmpFile)
 }
 
 const buildData = async () => {
@@ -169,12 +190,3 @@ const buildData = async () => {
 (async () => {
   await buildData()
 })()
-
-// buildData()
-//   .then(() => {
-//     process.exit(1)
-//   })
-//   .catch(error => {
-//     console.error(error)
-//     process.exit(1)
-//   })

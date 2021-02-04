@@ -5,26 +5,18 @@ import { NotFoundError, RateLimitError } from '../../../libs/errors'
 import getIpAddress from '../../../libs/getIpAddress'
 import set from 'lodash/set'
 import get from 'lodash/get'
-import { existsSync, readFileSync } from 'fs'
-import { join } from 'path'
+import resolveFile from '../../../libs/resolveFile'
 
 const rateLimit = new RateLimit(1000, 60 * 1000)
 
 export default requestHandler(async (req: NextApiRequest, res: NextApiResponse) => {
   const timezone = (req.query.timezone as string[]).join('/')
 
-  res.setHeader('Cache-Control', 'maxage=86400, s-maxage=86400, stale-while-revalidate')
-
   if (!rateLimit.limit(res, `ip:${getIpAddress(req)},url:/api/timezones/[...timezone]`, 10)) {
     throw new RateLimitError('Rate limit of 10 requests every 60 seconds exceeded.')
   }
 
-  const countriesJSONPath = join(process.cwd(), 'data', 'countries.json')
-  if (!existsSync(countriesJSONPath)) {
-    return []
-  }
-
-  const countries: any[] = JSON.parse(readFileSync(countriesJSONPath).toString())
+  const countries: any[] = JSON.parse(resolveFile('data', 'tmp', 'countries.json').toString())
   // const countries: any[] = require('../../../data/countries.json')
   const timezones = countries.reduce((timezones, country) => {
     country.timezones.forEach((timezone: any) => {
@@ -46,6 +38,8 @@ export default requestHandler(async (req: NextApiRequest, res: NextApiResponse) 
   if (!tz) {
     throw new NotFoundError()
   }
+
+  res.setHeader('Cache-Control', 'maxage=86400, s-maxage=86400, stale-while-revalidate')
 
   return tz
 })
