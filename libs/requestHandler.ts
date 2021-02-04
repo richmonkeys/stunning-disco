@@ -17,6 +17,7 @@ interface RequestHandler {
 
 const requestHandler: RequestHandler = (handler) => async (req, res) => {
   try {
+    require('../scripts/build-data.js')
     await runMiddleware(req, res, cors)
     const result = await handler(req, res)
 
@@ -27,7 +28,6 @@ const requestHandler: RequestHandler = (handler) => async (req, res) => {
     } else {
       res.send(result)
     }
-    require('../scripts/build-data.js')
     // await prisma.$disconnect()
   } catch (error) {
     errorHandler(res, error)
