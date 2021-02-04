@@ -11,8 +11,6 @@ const rateLimit = new RateLimit(1000, 60 * 1000)
 export default requestHandler(async (req: NextApiRequest, res: NextApiResponse) => {
   const countryCode = req.query.countryCode as string
 
-  res.setHeader('Cache-Control', 'maxage=86400, s-maxage=86400, stale-while-revalidate')
-
   if (!rateLimit.limit(res, `ip:${getIpAddress(req)},url:/api/countries/[countryCode]`, 10)) {
     throw new RateLimitError('Rate limit of 10 requests every 60 seconds exceeded.')
   }
@@ -29,6 +27,8 @@ export default requestHandler(async (req: NextApiRequest, res: NextApiResponse) 
   if (!country) {
     throw new NotFoundError()
   }
+
+  res.setHeader('Cache-Control', 'maxage=86400, s-maxage=86400, stale-while-revalidate')
 
   return country
 })

@@ -20,8 +20,6 @@ export default requestHandler(async (req: NextApiRequest, res: NextApiResponse) 
     throw new RateLimitError('Rate limit of 10 requests every 60 seconds exceeded.')
   }
 
-  res.setHeader('Cache-Control', 'maxage=86400, s-maxage=86400, stale-while-revalidate')
-
   const citiesJSONPath = path.join(process.cwd(), 'data', 'cities.json')
   if (!fs.existsSync(citiesJSONPath)) {
     return []
@@ -29,8 +27,12 @@ export default requestHandler(async (req: NextApiRequest, res: NextApiResponse) 
 
   const cities: any[] = JSON.parse(fs.readFileSync(citiesJSONPath).toString())
   if (countryCode) {
+    res.setHeader('Cache-Control', 'maxage=86400, s-maxage=86400, stale-while-revalidate')
+
     return cities.filter(city => city.countryCode === countryCode)
   } else if (stateCode) {
+    res.setHeader('Cache-Control', 'maxage=86400, s-maxage=86400, stale-while-revalidate')
+
     return cities.filter(city => city.stateCode === stateCode)
   } else {
     throw new BadRequestError()
