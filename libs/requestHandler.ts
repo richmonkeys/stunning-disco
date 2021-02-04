@@ -17,7 +17,8 @@ interface RequestHandler {
 
 const requestHandler: RequestHandler = (handler) => async (req, res) => {
   try {
-    require('../scripts/build-data.js')
+    res.setHeader('Cache-Control', 'maxage=86400, s-maxage=86400, stale-while-revalidate')
+
     await runMiddleware(req, res, cors)
     const result = await handler(req, res)
 

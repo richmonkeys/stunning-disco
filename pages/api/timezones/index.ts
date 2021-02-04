@@ -5,7 +5,7 @@ import RateLimit from '../../../libs/rateLimit'
 import { RateLimitError } from '../../../libs/errors'
 import set from 'lodash/set'
 import get from 'lodash/get'
-import resolveFile from '../../../libs/resolveFile'
+import getCountries from '../../../libs/getCountries'
 
 const rateLimit = new RateLimit(1000, 60 * 1000)
 
@@ -16,8 +16,7 @@ export default requestHandler(async (req: NextApiRequest, res: NextApiResponse) 
     throw new RateLimitError('Rate limit of 10 requests every 60 seconds exceeded.')
   }
 
-  const countries: any[] = JSON.parse(resolveFile('data', 'tmp', 'countries.json').toString())
-  // const countries: any[] = require('../../../data/countries.json')
+  const countries = await getCountries()
 
   return Object.values(countries.reduce((timezones, country) => {
     country.timezones.forEach((timezone: any) => {

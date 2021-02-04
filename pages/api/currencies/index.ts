@@ -5,7 +5,7 @@ import RateLimit from '../../../libs/rateLimit'
 import { RateLimitError } from '../../../libs/errors'
 import set from 'lodash/set'
 import get from 'lodash/get'
-import resolveFile from '../../../libs/resolveFile'
+import getCountries from '../../../libs/getCountries'
 
 const rateLimit = new RateLimit(1000, 60 * 1000)
 
@@ -14,10 +14,8 @@ export default requestHandler(async (req: NextApiRequest, res: NextApiResponse) 
     throw new RateLimitError('Rate limit of 10 requests every 60 seconds exceeded.')
   }
 
-  res.setHeader('Cache-Control', 'maxage=86400, s-maxage=86400, stale-while-revalidate')
+  const countries = await getCountries()
 
-  const countries: any[] = JSON.parse(resolveFile('data', 'tmp', 'countries.json').toString())
-  // const countries: any[] = require('../../../data/countries.json')
   return Object.values(countries.reduce((currencies, country) => {
     if (country.currencyCode && country.currencyName && country.currencySymbol) {
       set(currencies, `${country.currencyCode}.currencyName`, country.currencyName)

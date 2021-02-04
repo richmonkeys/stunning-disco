@@ -5,7 +5,7 @@ const addDate = require('date-fns/add')
 const orderBy = require('lodash/orderBy')
 
 // const BASE_DIR = ['node_modules', '@richmonkeys', '.stunning-disco']
-const BASE_DIR = ['data', 'tmp']
+const BASE_DIR = ['public', 'data', 'tmp']
 
 /**
  * 

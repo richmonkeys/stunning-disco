@@ -3,7 +3,7 @@ import requestHandler from '../../../libs/requestHandler'
 import { BadRequestError, RateLimitError } from '../../../libs/errors'
 import RateLimit from '../../../libs/rateLimit'
 import getIpAddress from '../../../libs/getIpAddress'
-import resolveFile from '../../../libs/resolveFile'
+import getCities from '../../../libs/getCities'
 
 const rateLimit = new RateLimit(1000, 60 * 1000)
 
@@ -19,9 +19,7 @@ export default requestHandler(async (req: NextApiRequest, res: NextApiResponse) 
     throw new RateLimitError('Rate limit of 10 requests every 60 seconds exceeded.')
   }
 
-  const cities: any[] = JSON.parse(resolveFile('data', 'tmp', 'cities.json').toString())
-
-  res.setHeader('Cache-Control', 'maxage=86400, s-maxage=86400, stale-while-revalidate')
+  const cities = await getCities()
 
   if (countryCode) {
     return cities.filter(city => city.countryCode === countryCode)
